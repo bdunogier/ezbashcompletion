@@ -19,8 +19,8 @@
  * - 2: unknown script
  *
  * Arguments:
- * - scripts: returns a space separated list of available scripts
- * -
+ * - _scripts: returns a space separated list of available scripts
+ * - _args <script>: returns the space separated list of available arguments for <script>
  */
 
 require 'autoload.php';
@@ -41,11 +41,13 @@ if ( count( $arguments ) === 0 )
 
 switch( $arguments[0] )
 {
-    case 'scripts':
+    // scripts list
+    case '_scripts':
         echo implode( ' ', getScripts() );
         break;
 
-    case 'args':
+    // arguments list for a script
+    case '_args':
         if ( !isset( $arguments[1] ) )
             return 2;
         $script = getScript( $arguments[1] );
@@ -57,8 +59,11 @@ switch( $arguments[0] )
         echo implode( ' ', $arguments );
         break;
 
+    // execute the script
     default:
-        return 1;
+        $script = getScript( array_shift( $arguments ) );
+        $arguments = implode( ' ', $arguments );
+        passthru( "$script $arguments" );
 }
 
 /**

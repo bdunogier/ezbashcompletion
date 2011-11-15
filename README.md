@@ -23,27 +23,27 @@ Very hackish for now, but fortunately simple:
 
 1. Symlink (or copy...) the ezp.php script to your ezpublish root:
 
-```bash
-ln -s extension/ezbashcompletion/ezp.php ezp.php
-```
+    ```bash
+    ln -s extension/ezbashcompletion/ezp.php ezp.php
+    ```
 
 2. Symlink (or copy...) the bash_completion.sh script to /etc/bash_completion.d/ezp
 
-```bash
-ln -s /path/to/ezpublish/extension/ezbashcompletion/bash_completion.sh /etc/bash_completion.d/ezp
-```
+    ```bash
+    ln -s /path/to/ezpublish/extension/ezbashcompletion/bash_completion.sh /etc/bash_completion.d/ezp
+    ```
 
 3. Either create an alias, or symlink **ezp.php** to your **/usr/local/bin** folder, as *ezp*:
 
-```bash
-sudo ln -s /path/to/ezpublish/ezp.php /usr/local/bin/ezp
-```
+    ```bash
+    sudo ln -s /path/to/ezpublish/ezp.php /usr/local/bin/ezp
+    ```
 
 4. Make /usr/local/bin/ezp executable:
 
-```bash
-sudo chmod +x /usr/local/bin/ezp
-```
+    ```bash
+    sudo chmod +x /usr/local/bin/ezp
+    ```
 
 Try
 ===
@@ -51,7 +51,7 @@ From your eZ Publish root, type ezp<space>, then two tabs. It should show you th
 of them (or part of one of them), and tab again: tadaa, you should get the options:
 
 ```
-  ezp cache <tab><tab> => options !
+ezp cache <tab><tab> => options !
 ```
 
 How it works

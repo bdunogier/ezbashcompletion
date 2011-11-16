@@ -1,9 +1,14 @@
+eZ Bash Completion
+==================
+
 About
 =====
 
 This project aims at providing bash completion on eZ Publish command line scripts.
 
 Author: Bertrand Dunogier <bertrand dot dunogier [at] gmail dot com>
+
+Website: http://projects.ez.no/ezbashcompletion
 
 Getting it
 ==========

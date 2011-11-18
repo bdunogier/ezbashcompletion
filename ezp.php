@@ -23,8 +23,6 @@
  * - _args <script>: returns the space separated list of available arguments for <script>
  */
 
-define( 'WORD_SEPARATOR', "\n" );
-
 require 'autoload.php';
 
 $input = new ezcConsoleInput();
@@ -45,7 +43,7 @@ switch( $arguments[0] )
 {
     // scripts list
     case '_scripts':
-        echo implode( WORD_SEPARATOR, getScripts() );
+        complete( getScripts() );
         break;
 
     // arguments list for a script
@@ -55,10 +53,17 @@ switch( $arguments[0] )
         $script = getScript( $arguments[1] );
         if ( $script == false )
             return 2;
+
         $arguments = getArguments( $script );
         if ( $arguments == false )
             return 2;
-        echo implode( WORD_SEPARATOR, $arguments );
+
+        complete( $arguments );
+        break;
+
+    case '_siteaccess_list':
+        $siteaccessList = eZINI::
+        complete( $siteaccessList );
         break;
 
     // execute the script
@@ -66,6 +71,15 @@ switch( $arguments[0] )
         $script = getScript( array_shift( $arguments ) );
         $arguments = implode( ' ', $arguments );
         passthru( "$script $arguments" );
+}
+
+/**
+ * Formats and output a words list for completion
+ * @param array $words
+ */
+function complete( array $words )
+{
+    echo implode( "\n", $words );
 }
 
 /**

@@ -11,6 +11,14 @@ _ezp()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
+    if [ "${cur}" = "=" ]; then
+        #todo split on = to get a valid $cur
+        prev="${prev}="
+        cur=""
+    fi
+
+    _ezp_p_debug "PREV: ${prev}"
+
     case "${prev}" in
 
         # completion for ezp command: script names
@@ -25,9 +33,24 @@ _ezp()
 	--siteaccess | -s)
 	    _ezp_exec "_siteaccess_list"
 	    _ezp_complete "${exec_result}" "${cur}"
+            return 0
 	    ;;
 
-	# other: arguments for the executed script
+        # ezcache.php --clear-tag=
+        --clear-tag=)
+            _ezp_exec "_ezcache_tags"
+            _ezp_complete "${exec_result}" "${cur}"     
+            return 0
+            ;;
+
+        # ezcache.php --clear-id=
+        --clear-id=)
+            _ezp_exec "_ezcache_ids"
+            _ezp_complete "${exec_result}" "${cur}"     
+            return 0
+            ;;
+
+        # other: arguments for the executed script
         *)
             script="${COMP_WORDS[1]}"
             _ezp_exec "_args" "${script}"

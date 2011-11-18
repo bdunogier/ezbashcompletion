@@ -66,6 +66,14 @@ switch( $arguments[0] )
         complete( $siteaccessList );
         break;
 
+    case '_ezcache_tags':
+        complete( eZCache::fetchTagList() );
+        break;
+
+    case '_ezcache_ids':
+        complete( eZCache::fetchIDList() );
+        break;
+
     // execute the script
     default:
         $script = getScript( array_shift( $arguments ) );

@@ -21,7 +21,13 @@ _ezp()
             return 0
             ;;
 
-        # other: arguments for the executed script
+        # siteaccess completion
+	--siteaccess | -s)
+	    _ezp_exec "_siteaccess_list"
+	    _ezp_complete "${exec_result}" "${cur}"
+	    ;;
+
+	# other: arguments for the executed script
         *)
             script="${COMP_WORDS[1]}"
             _ezp_exec "_args" "${script}"
@@ -39,10 +45,8 @@ complete -o default -o nospace -F _ezp ezp 2>>/dev/null || -o default -o nospace
 # @param $2 Current word
 _ezp_complete()
 {
-    #_ezp_p_debug "CUR='${2}', W='${1}'"
     local IFS=$'\n'
-    COMPREPLY=( $(compgen -W "${1}" -- ${2} ) )
-    #_ezp_p_debug "COMPREPLY=${COMPREPLY}"
+    COMPREPLY=( $(compgen -W "$1" -- $2 ) )
 }
 
 # Executes ezp.php with the given arguments

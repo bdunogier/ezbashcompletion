@@ -11,9 +11,6 @@ _ezp()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    p_debug "PREV: ${prev}"
-
-
     case "${prev}" in
 
         # completion for ezp command: script names

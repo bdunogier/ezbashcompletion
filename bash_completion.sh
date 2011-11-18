@@ -2,6 +2,11 @@ _ezp()
 {
     local cur prev opts
 
+    # Exit directly if not in an ezpublish instance
+    if [ ! -f lib/version.php ]; then
+        return 0
+    fi
+
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"

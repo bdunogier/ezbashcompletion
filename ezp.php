@@ -23,6 +23,8 @@
  * - _args <script>: returns the space separated list of available arguments for <script>
  */
 
+define( 'WORD_SEPARATOR', "\n" );
+
 require 'autoload.php';
 
 $input = new ezcConsoleInput();
@@ -43,7 +45,7 @@ switch( $arguments[0] )
 {
     // scripts list
     case '_scripts':
-        echo implode( ' ', getScripts() );
+        echo implode( WORD_SEPARATOR, getScripts() );
         break;
 
     // arguments list for a script
@@ -56,7 +58,7 @@ switch( $arguments[0] )
         $arguments = getArguments( $script );
         if ( $arguments == false )
             return 2;
-        echo implode( ' ', $arguments );
+        echo implode( WORD_SEPARATOR, $arguments );
         break;
 
     // execute the script
@@ -68,6 +70,9 @@ switch( $arguments[0] )
 
 /**
  * Returns the list of available scripts, without the ez/ezp prefix and without the .php extension
+ *
+ * Spaces are added at the of each script name for better completion
+ *
  * @return array
  */
 function getScripts()
@@ -80,7 +85,7 @@ function getScripts()
 
         // $scriptName = str_replace( '.php', '', $script->getFilename() );
         $scriptName = preg_replace( '#(ezp?)?(.*)\.php#', '$2', $script->getFilename() );
-        $scripts[] = $scriptName;
+        $scripts[] = "$scriptName ";
     }
     return $scripts;
 }
@@ -103,14 +108,17 @@ function getScript( $script )
 
 /**
  * Returns the arguments list for $script
+ *
+ * Spaces are added at the of each argument except if it ends with an = sign, for better completion
+ *
  * @param string $script (root) relative path to the script
  * @return array List of arguments, dashes included
  */
 function getArguments( $script )
 {
     $helpText = `php $script --help`;
-    $eZScriptPattern = '/^  (?:(-[-_a-z0-9+]),)?(--[-_a-z0-9]+)(?:=VALUE)?/ms';
-    $ezcPattern = '/^(?:(-[-_a-z0-9+]) \/ )?(--[-_a-z0-9]+)(?:=VALUE)?/ms';
+    $eZScriptPattern = '/^  (?:(-[-_a-z0-9+]),)?(--[-_a-z0-9]+=?)(?:VALUE)?/ms';
+    $ezcPattern = '/^(?:(-[-_a-z0-9+]) \/ )?(--[-_a-z0-9]+=?)(?:VALUE)?/ms';
 
     if ( !preg_match_all( $eZScriptPattern, $helpText, $options, PREG_SET_ORDER ) )
         if ( !preg_match_all( $ezcPattern, $helpText, $options, PREG_SET_ORDER ) )
@@ -120,10 +128,18 @@ function getArguments( $script )
     foreach( $options as $option )
     {
         if ( !empty( $option[1] ) )
+        {
+            if ( substr( $option[1], -1 ) !=  '=' )
+                $option[1] .= ' ';
             $result[] = $option[1];
+        }
 
         if ( !empty( $option[2] ) )
+        {
+            if ( substr( $option[2], -1 ) !=  '=' )
+                $option[2] .= ' ';
             $result[] = $option[2];
+        }
     }
 
     return $result;

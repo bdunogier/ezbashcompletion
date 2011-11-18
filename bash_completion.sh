@@ -16,7 +16,7 @@ _ezp()
         # completion for ezp command: script names
         ezp)
             scripts=`echo "" | php ezp.php _scripts`
-            COMPREPLY=( $(compgen -W "${scripts}" -- ${cur}) )
+            _ezp_complete "${scripts}" "${cur}"
             return 0
             ;;
 
@@ -24,14 +24,27 @@ _ezp()
         *)
             script="${COMP_WORDS[1]}"
             options=`echo "" | php ezp.php _args ${script}`
-            COMPREPLY=( $(compgen -W "${options}" -- ${cur}) )
+            _ezp_complete "${options}" "${cur}"
             return 0
             ;;
     esac
 }
-complete -F _ezp ezp
+complete -o default -o nospace -F _ezp ezp 2>>/dev/null || -o default -o nospace -F _ezp ezp 2>>/dev/null
 
-p_debug()
+# Parameters:
+# @param $1 Options string, \n separated
+# @param $2 Current word
+_ezp_complete()
+{
+    _ezp_p_debug "CUR='${2}', W='${1}'"
+    local IFS=$'\n'
+    COMPREPLY=( $(compgen -W "${1}" -- ${2}) )
+    _ezp_p_debug "COMPREPLY=${COMPREPLY}"
+}
+
+# Debug method. Prints to completion.log
+# @param $1 String to print
+_ezp_p_debug()
 {
     echo "* ${1}" >> completion.log
 }

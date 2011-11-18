@@ -62,7 +62,7 @@ switch( $arguments[0] )
         break;
 
     case '_siteaccess_list':
-        $siteaccessList = eZINI::
+        $siteaccessList = eZINI::instance()->variable( 'SiteAccessSettings', 'AvailableSiteAccessList' );
         complete( $siteaccessList );
         break;
 

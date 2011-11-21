@@ -158,6 +158,8 @@ function getArguments( $script )
 
         if ( !empty( $option[2] ) )
         {
+            if ( $option[2] == '--siteaccess' )
+                $option[2] .= '=';
             if ( substr( $option[2], -1 ) !=  '=' )
                 $option[2] .= ' ';
             $result[] = $option[2];

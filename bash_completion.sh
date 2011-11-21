@@ -30,7 +30,7 @@ _ezp()
             ;;
 
         # siteaccess completion
-	--siteaccess | -s)
+	--siteaccess= | -s)
 	    _ezp_exec "_siteaccess_list"
 	    _ezp_complete "${exec_result}" "${cur}"
             return 0

@@ -93,11 +93,25 @@ _ezp()
     _ezp_p_debug "COMP_WORDS: ${COMP_WORDS[*]} | PREV: ${prev} | CUR: ${cur}"
 
     case "$cur" in
+        # siteaccess completion
         --siteaccess=*)
 	    _ezp_exec "_siteaccess_list"
 	    _ezp_complete "${exec_result}" "${cur##--siteaccess=}"
             return 0
 	;;
+        
+	# ezcache.php --clear-tag=
+        --clear-tag=*)
+            _ezp_exec "_ezcache_tags"
+            _ezp_complete "${exec_result}" "${cur##--clear-tag=}"
+            return 0
+            ;;
+
+        # ezcache.php --clear-id=
+        --clear-id=*)
+            _ezp_exec "_ezcache_ids"
+            _ezp_complete "${exec_result}" "${cur##--clear-id=}"     
+            return 0
     esac
    
     case "$prev" in

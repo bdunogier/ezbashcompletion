@@ -109,6 +109,7 @@ function getScripts()
         $scriptName = preg_replace( '#(ezp?)?(.*)\.php#', '$2', $script->getFilename() );
         $scripts[] = "$scriptName ";
     }
+    $scripts[] = 'runcronjobs ';
     return $scripts;
 }
 
@@ -118,6 +119,11 @@ function getScripts()
  */
 function getScript( $script )
 {
+    if ( $script == 'runcronjobs' )
+    {
+        return './runcronjobs.php';
+    }
+
     $candidatePaths = array( 'bin/php/ez', 'bin/php/ezp', 'bin/php/' );
     foreach( $candidatePaths as $candidatePath )
     {

@@ -1,3 +1,6 @@
+# Comment out to disable logging to ./completion.log
+# DEBUG=1
+
 __ezp_reassemble_comp_words_by_ref()
 {
     local exclude i j first
@@ -183,5 +186,7 @@ _ezp_exec()
 # @param $1 String to print
 _ezp_p_debug()
 {
-    echo "* ${1}" >> completion.log
+    if [ -z "$DEBUG" ] then
+	echo "* ${1}" >> completion.log
+    fi
 }

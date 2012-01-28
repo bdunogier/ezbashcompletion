@@ -1,5 +1,5 @@
 # Comment out to disable logging to ./completion.log
-# DEBUG=1
+DEBUG=1
 
 __ezp_reassemble_comp_words_by_ref()
 {
@@ -82,9 +82,43 @@ _ezp()
 {
     local cur prev opts
 
+    if [ -n "$EZPCOMP_IS_EZ_DIR" ]; then EZPCOMP_IS_EZ_DIR=0; fi
     # Exit directly if not in an ezpublish instance
-    if [ ! -f lib/version.php ]; then
+    CWD=$(pwd -P)
+    EZPCOMP_PWD=$CWD
+
+    # Reset the previous working directory if it doesn't match the current one
+    if [ -n "$EZPCOMP_PWD" ] || [ "$EZPCOMP_PWD" -ne "$CWD" ]; then
+        local cwd_array ifs_bak
+        IFS_BAK=$IFS
+        IFS="/"
+        CWD_ARRAY=( $CWD )
+        EZPCOMP_IS_EZ_DIR=0
+        for(( index=${#CWD_ARRAY[*]} ; index > 0 ; index-- ))
+        do
+            local testdir    
+            testdir="${CWD_ARRAY[*]:0:$index}"
+            _ezp_p_debug "$testdir/lib/version.php"
+            if [ -f "$testdir/lib/version.php" ]; then
+                _ezp_p_debug "$testdir did match"
+                EZPCOMP_EZ_DIR="$testdir"
+                EZPCOMP_IS_EZ_DIR=1
+                EZPCOMP_PWD=$CWD
+                export EZPCOMP_EZ_DIR
+                export EZPCOMP_IS_EZ_DIR
+                break
+            fi
+        done
+        IFS=$IFS_BAK
+    fi
+
+    # Not an eZ Dir
+    if [ -z "$EZPCOMP_IS_EZ_DIR" ] || [ "$EZPCOMP_IS_EZ_DIR" -eq 0 ]; then
         return 0
+    #else
+    #    _ezp_p_debug "Attempting to CD"
+    #    cd "$EZPCOMP_EZ_DIR"
+    #    _ezp_p_debug $(pwd -P)
     fi
 
     COMPREPLY=()
@@ -98,12 +132,12 @@ _ezp()
     case "$cur" in
         # siteaccess completion
         --siteaccess=*)
-        _ezp_exec "_siteaccess_list"
-        _ezp_complete "${exec_result}" "${cur##--siteaccess=}"
+            _ezp_exec "_siteaccess_list"
+            _ezp_complete "${exec_result}" "${cur##--siteaccess=}"
             return 0
-    ;;
+            ;;
 
-    # ezcache.php --clear-tag=
+        # ezcache.php --clear-tag=
         --clear-tag=*)
             _ezp_exec "_ezcache_tags"
             _ezp_complete "${exec_result}" "${cur##--clear-tag=}"
@@ -122,17 +156,17 @@ _ezp()
         # completion for ezp command: script names
         ezp)
             _ezp_exec "_scripts"
-        scripts=$exec_result
+            scripts=$exec_result
             _ezp_complete "${scripts}" "${cur}"
             return 0
             ;;
 
         # siteaccess completion
-    --siteaccess | -s)
-        _ezp_exec "_siteaccess_list"
-        _ezp_complete "${exec_result}" "${cur##--siteaccess=}"
+        --siteaccess | -s)
+            _ezp_exec "_siteaccess_list"
+            _ezp_complete "${exec_result}" "${cur##--siteaccess=}"
             return 0
-        ;;
+            ;;
 
         # ezcache.php --clear-tag=
         --clear-tag=)
@@ -152,8 +186,8 @@ _ezp()
         *)
             script="${COMP_WORDS[1]}"
             _ezp_exec "_args" "${script}"
-        options=$exec_result
-        _ezp_complete "${options}" "${cur}"
+            options=$exec_result
+            _ezp_complete "${options}" "${cur}"
             return 0
             ;;
     esac
@@ -177,16 +211,26 @@ _ezp_complete()
 # @param $2...n Extra arguments
 _ezp_exec()
 {
+    if [ -n "$EZPCOMP_IS_EZ_DIR" ] || [ "$EZPCOMP_IS_EZ_DIR" -eq 1 ]; then
+        _ezp_p_debug "cd $EZPCOMP_IS_EZ_DIR"
+	cd "$EZPCOMP_EZ_DIR" > /dev/null
+    fi
+
     local command="php ezp.php ${1} ${2}"
-    _ezp_p_debug "Exec command: ${command}"
+    _ezp_p_debug "Exec command: ${command} from wd $(pwd -P)"
     exec_result=`echo "" | ${command}`
+    
+    if [ -n "$EZPCOMP_IS_EZ_DIR" ] || [ "$EZPCOMP_IS_EZ_DIR" -eq 1 ]; then
+        _ezp_p_debug "cd -"
+	cd - > /dev/null
+    fi
 }
 
 # Debug method. Prints to completion.log
 # @param $1 String to print
 _ezp_p_debug()
 {
-    if [ -z "$DEBUG" ] then
-	echo "* ${1}" >> completion.log
+    if [ -n "$DEBUG" ]; then
+        echo "* ${1}" >> /tmp/ezcompletion.log
     fi
 }

@@ -23,6 +23,23 @@
  * - _args <script>: returns the space separated list of available arguments for <script>
  */
 
+// these environnement variables are set by the completion shell script
+$ezpCompDir = getenv( 'EZPCOMP_EZ_DIR' );
+$ezpCompIseZDir = getenv( 'EZPCOMP_IS_EZ_DIR' );
+$ezpCompPwd = getenv( 'EZPCOMP_PWD' );
+
+// switch the working directory based on what the completion shell script has
+if ( $ezpCompIseZDir == 1 && $ezpCompPwd == getcwd() )
+{
+    chdir( $ezpCompDir );
+}
+
+if ( !file_exists( "lib/version.php" ) )
+{
+    echo "This script can only be executed from inside an eZ Publish directory\n";
+    exit( 1 );
+}
+
 require 'autoload.php';
 
 $input = new ezcConsoleInput();
@@ -78,6 +95,7 @@ switch( $arguments[0] )
     default:
         $script = getScript( array_shift( $arguments ) );
         $arguments = implode( ' ', $arguments );
+	echo "Running $script $arguments\n";
         passthru( "$script $arguments" );
 }
 
@@ -145,6 +163,13 @@ function getScript( $script )
 function getArguments( $script )
 {
     $helpText = `php $script --help`;
+
+    // command line example, for non option arguments
+    $eZScriptPattern = '/Usage: [^ ]+ \[OPTION\]\.\.\.(?: \[([a-z0-9]+)\])?/i';
+    if ( preg_match( $eZScriptPattern, $helpText, $matches ) )
+        print_r( $matches );
+
+    // arguments
     $eZScriptPattern = '/^  (?:(-[-_a-z0-9+]),)?(--[-_a-z0-9]+=?)(?:VALUE)?/ms';
     $ezcPattern = '/^(?:(-[-_a-z0-9+]) \/ )?(--[-_a-z0-9]+=?)(?:VALUE)?/ms';
 

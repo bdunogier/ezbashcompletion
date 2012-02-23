@@ -13,7 +13,7 @@ Website: http://projects.ez.no/ezbashcompletion
 Getting it
 ==========
 
-Currently only available on http://github.com/bdunogier/ezbashcompletion.
+Currently only available on http://github.com/bdunogier/bdbashcompletion.
 
 You can either download a tarball, or clone the repository:
 

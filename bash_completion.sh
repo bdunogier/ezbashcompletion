@@ -217,7 +217,7 @@ _ezp_exec()
 	cd "$EZPCOMP_EZ_DIR" > /dev/null
     fi
 
-    local command="php ezp.php ${1} ${2}"
+    local command="ezp ${1} ${2}"
     _ezp_p_debug "Exec command: ${command} from wd $(pwd -P)"
     exec_result=`echo "" | ${command}`
     

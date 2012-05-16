@@ -29,7 +29,7 @@ $ezpCompIseZDir = getenv( 'EZPCOMP_IS_EZ_DIR' );
 $ezpCompPwd = getenv( 'EZPCOMP_PWD' );
 
 // switch the working directory based on what the completion shell script has
-if ( $ezpCompIseZDir == 1 && $ezpCompPwd == getcwd() )
+if ( $ezpCompIseZDir == 1 && $ezpCompPwd != getcwd() )
 {
     chdir( $ezpCompDir );
 }

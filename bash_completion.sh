@@ -1,5 +1,5 @@
 # Comment out to disable logging to ./completion.log
-DEBUG=1
+DEBUG=0
 
 __ezp_reassemble_comp_words_by_ref()
 {
@@ -48,7 +48,7 @@ __ezp_reassemble_comp_words_by_ref()
 }
 
 if ! type _get_comp_words_by_ref >/dev/null 2>&1; then
-_get_comp_words_by_ref ()
+_get_comp_words_by_ref()
 {
     local exclude cur_ words_ cword_
     if [ "$1" = "-n" ]; then
@@ -115,10 +115,6 @@ _ezp()
     # Not an eZ Dir
     if [ -z "$EZPCOMP_IS_EZ_DIR" ] || [ "$EZPCOMP_IS_EZ_DIR" -eq 0 ]; then
         return 0
-    #else
-    #    _ezp_p_debug "Attempting to CD"
-    #    cd "$EZPCOMP_EZ_DIR"
-    #    _ezp_p_debug $(pwd -P)
     fi
 
     COMPREPLY=()
@@ -127,9 +123,14 @@ _ezp()
 
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    _ezp_p_debug "COMP_WORDS: ${COMP_WORDS[*]} | PREV: ${prev} | CUR: ${cur}"
 
+    # Store the current command for further usage
+    if [ $COMP_CWORD -gt 1 ]; then COMMAND=${COMP_WORDS[1]}; fi
+
+    _ezp_p_debug "COMP_CWORD: ${COMP_CWORD} | COMP_WORDS: ${COMP_WORDS[*]} | PREV: ${prev} | CUR: ${cur} | COMMAND: ${COMMAND}"
+    
     case "$cur" in
+
         # siteaccess completion
         --siteaccess=*)
             _ezp_exec "_siteaccess_list"
@@ -200,7 +201,7 @@ complete -o default -o nospace -F _ezp ezp 2>>/dev/null || -o default -o nospace
 # @param $2 Current word
 _ezp_complete()
 {
-    _ezp_p_debug "_ezp_complete '$1' '$2'"
+    # _ezp_p_debug "_ezp_complete '$1' '$2'"
     local IFS=$'\n'
     COMPREPLY=( $(compgen -W "$1" -- "$2" ) )
 }
@@ -212,7 +213,7 @@ _ezp_complete()
 _ezp_exec()
 {
     if [ -n "$EZPCOMP_IS_EZ_DIR" ] || [ "$EZPCOMP_IS_EZ_DIR" -eq 1 ]; then
-        _ezp_p_debug "cd $EZPCOMP_IS_EZ_DIR"
+        _ezp_p_debug "cd $EZPCOMP_EZ_DIR"
 	cd "$EZPCOMP_EZ_DIR" > /dev/null
     fi
 

@@ -95,7 +95,6 @@ switch( $arguments[0] )
     default:
         $script = getScript( array_shift( $arguments ) );
         $arguments = implode( ' ', $arguments );
-	echo "Running $script $arguments\n";
         passthru( "$script $arguments" );
 }
 

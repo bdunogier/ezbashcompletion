@@ -84,7 +84,7 @@ _ezp()
 
     if [ -n "$EZPCOMP_IS_EZ_DIR" ]; then EZPCOMP_IS_EZ_DIR=0; fi
     # Exit directly if not in an ezpublish instance
-    CWD=$(pwd -P)
+    CWD=$(pwd)
     EZPCOMP_PWD=$CWD
 
     # Reset the previous working directory if it doesn't match the current one
@@ -92,13 +92,13 @@ _ezp()
         local cwd_array ifs_bak
         IFS_BAK=$IFS
         IFS="/"
-        CWD_ARRAY=( $CWD )
+	CWD_ARRAY=( $CWD )
         EZPCOMP_IS_EZ_DIR=0
-        for(( index=${#CWD_ARRAY[*]} ; index > 0 ; index-- ))
+	for(( index=${#CWD_ARRAY[*]} ; index > 0 ; index-- ))
         do
             local testdir    
             testdir="${CWD_ARRAY[*]:0:$index}"
-            _ezp_p_debug "$testdir/lib/version.php"
+            _ezp_p_debug "$index: $testdir/lib/version.php"
             if [ -f "$testdir/lib/version.php" ]; then
                 _ezp_p_debug "$testdir did match"
                 EZPCOMP_EZ_DIR="$testdir"
@@ -218,7 +218,7 @@ _ezp_exec()
     fi
 
     local command="ezp ${1} ${2}"
-    _ezp_p_debug "Exec command: ${command} from wd $(pwd -P)"
+    _ezp_p_debug "Exec command: ${command} from wd $(pwd)"
     exec_result=`echo "" | ${command}`
     
     if [ -n "$EZPCOMP_IS_EZ_DIR" ] || [ "$EZPCOMP_IS_EZ_DIR" -eq 1 ]; then
@@ -231,6 +231,8 @@ _ezp_exec()
 # @param $1 String to print
 _ezp_p_debug()
 {
+    local DEBUG
+    
     if [ -n "$DEBUG" ]; then
         echo "* ${1}" >> /tmp/ezcompletion.log
     fi

@@ -26,34 +26,34 @@ Setting it up
 
 Very hackish for now, but fortunately simple:
 
-1. Symlink (or copy...) the ezp.php script to your ezpublish root:
+ezp.php
+-------
+This script is the main wrapper script. It has two roles:
+
+- provides the bash completion shell script with eZ Publish data: scripts list, arguments, etc
+- gets called when commands are ran using the "ezp" executable, and transfers the command to the actual script
+
+It needs to be available as 'ezp', without .php, through your $PATH, and to be executable:
 
     ```bash
-    ln -s extension/ezbashcompletion/ezp.php ezp.php
+    ln -s /path/to/ezbashcompletion/ezp.php /usr/local/bin/ezp
+    chmod +x ezp
     ```
 
-2. Symlink (or copy...) the bash_completion.sh script to /etc/bash_completion.d/ezp
+The ezp bash completion script
+------------------------------
+
+This is the shell script that will provide completion information. You just need to copy/symlink it to
+/etc/bash_completion.d
 
     ```bash
     ln -s /path/to/ezpublish/extension/ezbashcompletion/bash_completion.sh /etc/bash_completion.d/ezp
     ```
 
-3. Either create an alias, or symlink **ezp.php** to your **/usr/local/bin** folder, as *ezp*:
-
-    ```bash
-    sudo ln -s /path/to/ezpublish/ezp.php /usr/local/bin/ezp
-    ```
-
-4. Make /usr/local/bin/ezp executable:
-
-    ```bash
-    sudo chmod +x /usr/local/bin/ezp
-    ```
-
 Try
 ===
-From your eZ Publish root, type ezp<space>, then two tabs. It should show you the list of available commands. Type one
-of them (or part of one of them), and tab again: tadaa, you should get the options:
+From anywhere within an eZ Publish instance, type ezp<space>, then two tabs. It should show you the list of available
+commands. Type one of them (or part of one of them), and tab again: you should get the options:
 
 ```
 ezp cache <tab><tab> => options !

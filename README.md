@@ -1,6 +1,8 @@
 eZ Bash Completion
 ==================
 
+[![Analytics](https://ga-beacon.appspot.com/UA-52121860-1/ezbashcompletion/readme)](https://github.com/igrigorik/ga-beacon)
+
 About
 =====
 
